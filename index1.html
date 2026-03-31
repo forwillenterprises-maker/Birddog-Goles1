@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit a Deal — Property Acquisitions</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e1018;--bg2:#161b27;--bg3:#1c2235;--bg4:#222840;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --gold:#c9973a;--gold2:#e0b050;--gold-glow:rgba(201,151,58,0.15);--gold-border:rgba(201,151,58,0.3);
+  --text:#ece8e0;--muted:#7a8099;--dim:#414766;
+  --green:#27b87a;--red:#d95f5f;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+
+/* HERO */
+.hero{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:60px 24px 52px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 55% at 50% -10%,rgba(201,151,58,0.1) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold-border),transparent);
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);background:var(--gold-glow);
+  border:1px solid var(--gold-border);border-radius:2px;
+  padding:6px 16px;margin-bottom:24px;
+}
+.eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(52px,9vw,88px);
+  letter-spacing:0.04em;line-height:0.95;
+  color:var(--text);margin-bottom:20px;
+}
+h1 em{color:var(--gold);font-style:normal}
+.hero-sub{font-size:16px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.75}
+.hero-steps{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  margin-top:32px;flex-wrap:wrap;gap:8px;
+}
+.step-pill{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:99px;padding:8px 16px;font-size:13px;color:var(--muted);
+}
+.step-pill .n{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--gold-glow);border:1px solid var(--gold-border);
+  color:var(--gold);font-size:11px;font-weight:500;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* OUTER WRAP */
+.outer{max-width:740px;margin:0 auto;padding:40px 20px 100px}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:32px}
+.progress-track{height:3px;background:var(--border2);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;transition:width 0.4s ease;width:14%}
+.progress-label{font-size:12px;color:var(--dim);margin-top:8px;text-align:right}
+
+/* FORM CARDS */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:16px;overflow:hidden;
+  animation:rise 0.4s ease both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.04s}.card:nth-child(2){animation-delay:.08s}
+.card:nth-child(3){animation-delay:.12s}.card:nth-child(4){animation-delay:.16s}
+.card:nth-child(5){animation-delay:.20s}.card:nth-child(6){animation-delay:.24s}
+.card:nth-child(7){animation-delay:.28s}
+
+.card-head{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 24px;border-bottom:1px solid var(--border);
+  background:var(--bg3);
+}
+.card-num{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--gold);color:#0e1018;
+  font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card-title{font-size:14px;font-weight:500;color:var(--text);letter-spacing:0.01em}
+.card-title span{font-size:12px;font-weight:400;color:var(--dim);margin-left:8px}
+.card-body{padding:24px}
+
+/* GRID */
+.g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g.one{grid-template-columns:1fr}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.full{grid-column:1/-1}
+
+/* FIELDS */
+.f{display:flex;flex-direction:column;gap:6px}
+.f label{font-size:11px;font-weight:500;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.f label .req{color:var(--gold);margin-left:2px}
+.f input,.f select,.f textarea{
+  background:var(--bg);border:1px solid var(--border2);border-radius:7px;
+  color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;
+  padding:10px 14px;transition:border-color .15s,box-shadow .15s;width:100%;
+}
+.f select{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23414766' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;
+}
+.f select option{background:#1c2235;color:var(--text)}
+.f textarea{resize:vertical;min-height:88px}
+.f input::placeholder,.f textarea::placeholder{color:var(--dim)}
+.f input:focus,.f select:focus,.f textarea:focus{
+  outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow);
+}
+.f .hint{font-size:11px;color:var(--dim);margin-top:1px;font-style:italic}
+
+/* TOGGLE CHECKS */
+.toggle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.tg-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:7px;padding:10px 12px;
+  cursor:pointer;transition:border-color .15s,background .15s;
+  font-size:13px;color:var(--muted);user-select:none;
+}
+.tg-item:hover{border-color:var(--gold-border);color:var(--text)}
+.tg-item input{display:none}
+.tg-box{
+  width:16px;height:16px;border-radius:3px;
+  border:1.5px solid var(--dim);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.tg-item.on{border-color:var(--gold);background:var(--gold-glow);color:var(--text)}
+.tg-item.on .tg-box{background:var(--gold);border-color:var(--gold)}
+.tg-item.on .tg-box::after{
+  content:'';display:block;
+  width:9px;height:5px;
+  border-left:2px solid #0e1018;border-bottom:2px solid #0e1018;
+  transform:rotate(-45deg) translate(1px,-1px);
+}
+
+/* UPLOAD */
+.upzone{
+  border:1.5px dashed var(--gold-border);border-radius:8px;
+  padding:28px 20px;text-align:center;cursor:pointer;
+  transition:all .2s;background:var(--bg3);
+}
+.upzone:hover{border-color:var(--gold);background:var(--gold-glow)}
+.upzone-icon{font-size:30px;margin-bottom:8px}
+.upzone p{font-size:14px;color:var(--muted)}
+.upzone p strong{color:var(--gold2)}
+.upzone small{font-size:12px;color:var(--dim);display:block;margin-top:4px}
+.filetags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ftag{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:5px;padding:4px 10px;
+  font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;
+}
+.ftag button{background:none;border:none;cursor:pointer;color:var(--dim);font-size:15px;line-height:1;padding:0;transition:color .15s}
+.ftag button:hover{color:var(--red)}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:16px 0 20px}
+
+/* URGENCY SELECTOR */
+.urgency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.urg-item{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:14px 8px;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.urg-item:hover{border-color:var(--border2)}
+.urg-item input{display:none}
+.urg-emoji{font-size:22px}
+.urg-label{font-size:12px;font-weight:500;color:var(--muted)}
+.urg-desc{font-size:11px;color:var(--dim);line-height:1.4}
+.urg-item.on.hot{border-color:var(--red);background:rgba(217,95,95,.1)}
+.urg-item.on.hot .urg-label{color:#e07070}
+.urg-item.on.warm{border-color:#c9883a;background:rgba(201,136,58,.1)}
+.urg-item.on.warm .urg-label{color:#d4983e}
+.urg-item.on.cool{border-color:var(--green);background:rgba(39,184,122,.08)}
+.urg-item.on.cool .urg-label{color:var(--green)}
+
+/* SUBMIT */
+.submit-area{text-align:center;margin-top:36px}
+.submit-btn{
+  display:inline-block;
+  background:var(--gold);color:#0e1018;
+  font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.1em;
+  border:none;border-radius:8px;padding:18px 64px;
+  cursor:pointer;transition:background .15s,transform .1s;
+  position:relative;overflow:hidden;
+}
+.submit-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+.submit-btn:hover{background:var(--gold2)}
+.submit-btn:active{transform:scale(0.98)}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed}
+.submit-note{font-size:13px;color:var(--dim);margin-top:14px}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:80px 24px;animation:rise .5s ease}
+.success.show{display:block}
+.success-ring{
+  width:80px;height:80px;border-radius:50%;
+  border:2px solid var(--green);margin:0 auto 24px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  background:rgba(39,184,122,.08);
+}
+.success h2{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--green);letter-spacing:0.04em;margin-bottom:12px}
+.success p{font-size:16px;color:var(--muted);max-width:420px;margin:0 auto 28px;line-height:1.7}
+.another-btn{
+  background:transparent;border:1px solid var(--gold-border);color:var(--gold);
+  padding:10px 28px;border-radius:6px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:14px;transition:all .15s;
+}
+.another-btn:hover{background:var(--gold-glow)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-left:3px solid var(--green);border-radius:8px;
+  padding:14px 20px;min-width:260px;max-width:340px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);
+  transform:translateY(80px);opacity:0;transition:all .3s ease;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{border-left-color:var(--red)}
+.toast b{display:block;font-weight:500;margin-bottom:2px}
+.toast span{font-size:12px;color:var(--muted)}
+
+/* SPINNER */
+.spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(14,16,24,.3);border-top-color:#0e1018;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* NOTIFICATION STATUS */
+.notify-status{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:6px;padding:10px 14px;
+  font-size:13px;color:var(--muted);margin-bottom:20px;
+}
+.ns-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0}
+.ns-dot.off{background:var(--dim)}
+
+@media(max-width:600px){
+  .g,.g3{grid-template-columns:1fr}
+  .toggle-grid{grid-template-columns:1fr 1fr}
+  .urgency-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════════╗
+     ║  CONFIGURATION — edit these two lines, then host file   ║
+     ╚══════════════════════════════════════════════════════════╝ -->
+<script>
+const SUBMIT_CONFIG = {
+  // Your Gmail address — alerts will be sent here via the pipeline dashboard
+  notifyEmail: "forwillenterprises@gmail.com",
+  // Brand name shown in the hero
+  brandName: "Property Acquisitions",
+  // Pipeline webhook URL — paste the URL from pipeline-private.html Settings after setup
+  webhookUrl: "",
+};
+</script>
+
+<div id="formWrap">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow">Deal Submission Portal</div>
+    <h1>Submit a <em>Deal</em></h1>
+    <p class="hero-sub">Found a motivated seller? Fill in everything you know — the more detail you give us, the faster we can move.</p>
+    <div class="hero-steps">
+      <div class="step-pill"><div class="n">1</div>Property details</div>
+      <div class="step-pill"><div class="n">2</div>Seller info</div>
+      <div class="step-pill"><div class="n">3</div>Deal terms</div>
+      <div class="step-pill"><div class="n">4</div>Financials</div>
+      <div class="step-pill"><div class="n">5</div>Documents</div>
+    </div>
+  </div>
+
+  <div class="outer">
+
+    <!-- 1. PROPERTY -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">1</div><div class="card-title">Property Information <span>required fields marked *</span></div></div>
+      <div class="card-body">
+        <div class="g">
+          <div class="f full"><label>Street address <span class="req">*</span></label><input id="f-addr" type="text" placeholder="123 Main St, City, State, ZIP"></div>
+          <div class="f"><label>Property type <span class="req">*</span></label>
+            <select id="f-type">
+              <option value="">Select type…</option>
+              <option>Multifamily</option><option>RV Park</option><option>Self Storage</option>
+              <option>Mobile Home Park</option><option>Mixed Use</option><option>Single Tenant NNN</option>
+              <option>Retail Strip</option><option>Land</option><option>Other</option>
+            </select>
+          </div>
+          <div class="f"><label>Asking price</label><input id="f-price" type="text" placeholder="e.g. $1,200,000"></div>
+          <div class="f"><label>Units / pads / spaces</label><input id="f-units" type="text" placeholder="e.g. 48 units, 62 pads"></div>
+          <div class="f"><label>Year built</label><input id="f-year" type="text" placeholder="e.g. 1987"></div>
+          <div class="f"><label>Lot / building size</label><input id="f-size" type="text" placeholder="e.g. 4.2 acres / 18,400 sqft"></div>
+          <div class="f full"><label>Property condition / deferred maintenance</label><textarea id="f-condition" placeholder="Roof condition, HVAC age, deferred items, recent capital improvements…"></textarea></div>
+          <div class="f full"><label>Value-add opportunities</label><textarea id="f-valueadd" placeholder="Below market rents, vacant units, expansion potential, utility bill-backs, storage income…"></textarea></div>
+          <div class="f full"><label>Liens, title issues, back taxes</label><textarea id="f-liens" placeholder="Existing mortgage balance, tax liens, code violations, HOA issues, zoning complications…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. SELLER -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">2</div><div class="card-title">Seller Information</div></div>
+      <div class="card-body">
+        <div class="g">
+          <div class="f"><label>Seller name <span class="req">*</span></label><input id="f-seller" type="text" placeholder="Full name or entity"></div>
+          <div class="f"><label>Seller phone</label><input id="f-phone" type="tel" placeholder="(555) 000-0000"></div>
+          <div class="f"><label>Seller email</label><input id="f-email" type="email" placeholder="seller@email.com"></div>
+          <div class="f"><label>Listed with a broker?</label>
+            <select id="f-broker">
+              <option value="">Unknown</option>
+              <option>No — off market</option>
+              <option>Yes — listed on MLS / Loopnet</option>
+            </select>
+          </div>
+          <div class="f"><label>Reason for selling</label>
+            <select id="f-reason">
+              <option value="">Select…</option>
+              <option>Retirement</option><option>Estate / probate</option><option>Financial distress</option>
+              <option>Divorce</option><option>Relocating</option><option>1031 exchange</option>
+              <option>Partnership split</option><option>Health reasons</option><option>Other</option>
+            </select>
+          </div>
+          <div class="f"><label>Seller's timeline</label>
+            <select id="f-timeline">
+              <option value="">Select…</option>
+              <option>Immediate — under 30 days</option><option>30–60 days</option>
+              <option>60–90 days</option><option>90–180 days</option><option>Flexible / no rush</option>
+            </select>
+          </div>
+          <div class="f full"><label>Motivation — what did the seller tell you?</label><textarea id="f-motivation" placeholder="Their situation, urgency, pain points, what they said when you spoke. The more context the better…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TERMS -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">3</div><div class="card-title">Deal Terms</div></div>
+      <div class="card-body">
+        <div class="f"><label>Terms seller is open to — check all that apply</label>
+          <div class="toggle-grid" id="termsGrid">
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="All Cash"><div class="tg-box"></div>All cash</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Seller Financing"><div class="tg-box"></div>Seller financing</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Assumable Loan"><div class="tg-box"></div>Assumable loan</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Subject To"><div class="tg-box"></div>Subject to</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Owner Carry"><div class="tg-box"></div>Owner carry</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Lease Option"><div class="tg-box"></div>Lease option</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Master Lease"><div class="tg-box"></div>Master lease</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="JV / Equity Share"><div class="tg-box"></div>JV / equity share</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Land Contract"><div class="tg-box"></div>Land contract</label>
+          </div>
+        </div>
+        <div class="div"></div>
+        <div class="g">
+          <div class="f"><label>Down payment discussed</label><input id="f-down" type="text" placeholder="e.g. 20% or $400,000"></div>
+          <div class="f"><label>Interest rate (if seller financing)</label><input id="f-rate" type="text" placeholder="e.g. 6.5%"></div>
+          <div class="f"><label>Amortization / balloon term</label><input id="f-amort" type="text" placeholder="e.g. 30yr am, 5yr balloon"></div>
+          <div class="f"><label>Cap rate / GRM (if known)</label><input id="f-cap" type="text" placeholder="e.g. 7.2% cap"></div>
+          <div class="f full"><label>Additional terms notes</label><textarea id="f-termsnotes" placeholder="Any other creative structure, contingencies, or what the seller said about terms…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. FINANCIALS -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">4</div><div class="card-title">Financial Details</div></div>
+      <div class="card-body">
+        <div class="g">
+          <div class="f"><label>Gross annual income</label><input id="f-income" type="text" placeholder="e.g. $210,000"></div>
+          <div class="f"><label>Annual operating expenses</label><input id="f-expenses" type="text" placeholder="e.g. $88,000"></div>
+          <div class="f"><label>Current occupancy</label><input id="f-occ" type="text" placeholder="e.g. 91%"></div>
+          <div class="f"><label>Avg rent / pad / space / night</label><input id="f-avgrent" type="text" placeholder="e.g. $285/mo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DOCUMENTS -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">5</div><div class="card-title">Documents Available</div></div>
+      <div class="card-body">
+        <div class="f"><label>What does the seller have? — check all available</label>
+          <div class="toggle-grid" id="docsGrid">
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Offering Memo (OM)"><div class="tg-box"></div>Offering memo</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="T12 (Trailing 12 Months)"><div class="tg-box"></div>T12 (trailing 12)</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Rent Roll"><div class="tg-box"></div>Rent roll</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Tax Returns"><div class="tg-box"></div>Tax returns</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Survey"><div class="tg-box"></div>Survey</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Phase I ESA"><div class="tg-box"></div>Phase I ESA</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Photos / Video"><div class="tg-box"></div>Photos / video</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Utility Bills"><div class="tg-box"></div>Utility bills</label>
+            <label class="tg-item" onclick="tog(this)"><input type="checkbox" value="Inspection Report"><div class="tg-box"></div>Inspection report</label>
+          </div>
+        </div>
+        <div class="div"></div>
+        <div class="g one">
+          <div class="f">
+            <label>Upload files (OM, T12, rent roll, photos…)</label>
+            <div class="upzone" onclick="document.getElementById('fInput').click()">
+              <div class="upzone-icon">📎</div>
+              <p><strong>Click to attach files</strong> or drag and drop</p>
+              <small>PDF, Excel, images, docs — anything useful</small>
+              <input type="file" id="fInput" multiple style="display:none" onchange="addFiles(this)">
+            </div>
+            <div class="filetags" id="fileTags"></div>
+          </div>
+          <div class="f">
+            <label>External link (Dropbox, Google Drive, Loopnet, Costar…)</label>
+            <input id="f-link" type="url" placeholder="https://…">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. URGENCY -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">6</div><div class="card-title">Lead Urgency</div></div>
+      <div class="card-body">
+        <div class="f"><label>How hot is this lead?</label>
+          <div class="urgency-grid">
+            <label class="urg-item hot" onclick="setUrg(this,'🔴 Hot')"><input type="radio" name="urg" value="🔴 Hot"><div class="urg-emoji">🔴</div><div class="urg-label">Hot</div><div class="urg-desc">Seller needs to move now — days or weeks</div></label>
+            <label class="urg-item warm" onclick="setUrg(this,'🟡 Warm')"><input type="radio" name="urg" value="🟡 Warm"><div class="urg-emoji">🟡</div><div class="urg-label">Warm</div><div class="urg-desc">Motivated seller, not desperate, 1–3 months</div></label>
+            <label class="urg-item cool" onclick="setUrg(this,'🟢 Cool')"><input type="radio" name="urg" value="🟢 Cool"><div class="urg-emoji">🟢</div><div class="urg-label">Cool</div><div class="urg-desc">Good deal, seller has no rush</div></label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. YOUR INFO -->
+    <div class="card">
+      <div class="card-head"><div class="card-num">7</div><div class="card-title">Your Information</div></div>
+      <div class="card-body">
+        <div class="g">
+          <div class="f"><label>Your name <span class="req">*</span></label><input id="f-rep" type="text" placeholder="First Last"></div>
+          <div class="f"><label>Your phone / email</label><input id="f-repcontact" type="text" placeholder="So we can follow up with you"></div>
+          <div class="f"><label>How did you find this lead?</label>
+            <select id="f-source">
+              <option value="">Select…</option>
+              <option>Cold call / direct mail</option><option>Driving for dollars</option>
+              <option>Referral</option><option>Broker relationship</option>
+              <option>MLS / Loopnet / Costar</option><option>Auction</option><option>Other</option>
+            </select>
+          </div>
+          <div class="f"><label>Your gut feeling on this deal</label>
+            <select id="f-gut">
+              <option value="">Select…</option>
+              <option>💎 This is a deal — move fast</option>
+              <option>👍 Solid lead, worth reviewing</option>
+              <option>🤔 Not sure, you tell me</option>
+              <option>⚠️ Has issues but has potential</option>
+            </select>
+          </div>
+          <div class="f full"><label>Additional notes</label><textarea id="f-notes" placeholder="Neighborhood intel, competition, seller's personality, red flags, anything your gut says about this deal…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <button class="submit-btn" id="submitBtn" onclick="submitDeal()">SUBMIT THIS DEAL</button>
+      <div class="submit-note">We review every submission within 24–48 hours. You'll hear back from us if we want to move forward.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="successScreen">
+  <div class="outer">
+    <div class="success-ring">✓</div>
+    <h2>Deal Received!</h2>
+    <p>Our acquisition team has been notified and will review your submission. You'll hear from us within 24–48 hours if we want to move forward.</p>
+    <button class="another-btn" onclick="resetForm()">Submit another deal</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><b id="tTitle"></b><span id="tMsg"></span></div>
+
+<script>
+let files = [];
+let urgency = '';
+
+function tog(el) {
+  el.classList.toggle('on');
+  el.querySelector('input').checked = el.classList.contains('on');
+}
+
+function setUrg(el, val) {
+  document.querySelectorAll('.urg-item').forEach(x => x.classList.remove('on'));
+  el.classList.add('on');
+  el.querySelector('input').checked = true;
+  urgency = val;
+}
+
+function getChecked(gridId) {
+  return [...document.querySelectorAll('#' + gridId + ' input:checked')].map(x => x.value);
+}
+
+function addFiles(inp) {
+  [...inp.files].forEach(f => {
+    if (files.find(x => x.name === f.name)) return;
+    files.push(f);
+    const t = document.createElement('div'); t.className = 'ftag';
+    t.innerHTML = `<span>📄 ${f.name}</span><button onclick="rmFile('${f.name}',this)">×</button>`;
+    document.getElementById('fileTags').appendChild(t);
+  });
+}
+function rmFile(n, btn) { files = files.filter(f => f.name !== n); btn.parentElement.remove(); }
+
+function v(id) { return (document.getElementById(id) || {}).value || ''; }
+
+function toast(title, msg, err) {
+  const t = document.getElementById('toast');
+  document.getElementById('tTitle').textContent = title;
+  document.getElementById('tMsg').textContent = msg || '';
+  t.className = 'toast' + (err ? ' err' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+async function submitDeal() {
+  const addr = v('f-addr').trim(), seller = v('f-seller').trim(), rep = v('f-rep').trim(), type = v('f-type');
+  if (!addr || !seller || !rep || !type) { toast('Missing required fields', 'Please fill in address, property type, seller name, and your name.', true); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Submitting…';
+
+  const data = {
+    address: addr, type, price: v('f-price'), units: v('f-units'), year: v('f-year'),
+    size: v('f-size'), condition: v('f-condition'), valueadd: v('f-valueadd'), liens: v('f-liens'),
+    seller, phone: v('f-phone'), sellerEmail: v('f-email'), broker: v('f-broker'),
+    reason: v('f-reason'), timeline: v('f-timeline'), motivation: v('f-motivation'),
+    terms: getChecked('termsGrid'), down: v('f-down'), rate: v('f-rate'),
+    amort: v('f-amort'), cap: v('f-cap'), termsNotes: v('f-termsnotes'),
+    income: v('f-income'), expenses: v('f-expenses'), occ: v('f-occ'), avgrent: v('f-avgrent'),
+    docs: getChecked('docsGrid'), link: v('f-link'), fileNames: files.map(f => f.name),
+    rep, repContact: v('f-repcontact'), source: v('f-source'), gut: v('f-gut'),
+    urgency, notes: v('f-notes'), submittedAt: new Date().toISOString()
+  };
+
+  // POST to pipeline webhook if configured
+  if (SUBMIT_CONFIG.webhookUrl) {
+    try {
+      await fetch(SUBMIT_CONFIG.webhookUrl, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+    } catch(e) { console.warn('Webhook:', e); }
+  }
+
+  // Log to console for debugging / manual copy
+  console.log('DEAL SUBMITTED:', JSON.stringify(data, null, 2));
+
+  // Store in localStorage so pipeline can pick it up if on same device (fallback)
+  try {
+    const pending = JSON.parse(localStorage.getItem('pendingLeads') || '[]');
+    pending.push(data);
+    localStorage.setItem('pendingLeads', JSON.stringify(pending));
+  } catch(e) {}
+
+  btn.disabled = false;
+  btn.innerHTML = 'SUBMIT THIS DEAL';
+  document.getElementById('formWrap').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  window.scrollTo(0, 0);
+}
+
+function resetForm() {
+  document.querySelectorAll('input:not([type=radio]):not([type=checkbox]):not([type=file]),select,textarea').forEach(el => el.value = '');
+  document.querySelectorAll('.tg-item.on,.urg-item.on').forEach(el => {
+    el.classList.remove('on');
+    const inp = el.querySelector('input');
+    if (inp) inp.checked = false;
+  });
+  files = []; urgency = '';
+  document.getElementById('fileTags').innerHTML = '';
+  document.getElementById('formWrap').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

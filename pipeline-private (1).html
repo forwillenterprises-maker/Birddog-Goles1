@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Pipeline — Private</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1018;--bg2:#141822;--bg3:#1b2030;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);--gold:#d4a843;--glow:rgba(212,168,67,0.13);--text:#ede9e0;--muted:#7a8099;--dim:#3d4259;--green:#27c785;--green-bg:rgba(39,199,133,0.1);--red:#d95050;--red-bg:rgba(217,80,80,0.1);--amber:#e8a838;--amber-bg:rgba(232,168,56,0.1);--blue:#4a9eff;--blue-bg:rgba(74,158,255,0.1);--purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6}
+.lock{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.lock.gone{display:none}
+.lc{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:40px;width:100%;max-width:360px;text-align:center}
+.lico{font-size:38px;margin-bottom:12px}
+.lt{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.04em;color:var(--text);margin-bottom:4px}
+.ls{font-size:13px;color:var(--muted);margin-bottom:24px}
+.li{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:12px 16px;text-align:center;letter-spacing:.1em;margin-bottom:12px;transition:border-color .15s}
+.li:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--glow)}
+.lb{width:100%;background:var(--gold);color:#0d1018;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;border:none;border-radius:8px;padding:13px;cursor:pointer;transition:background .15s}
+.lb:hover{background:#e0b84d}
+.le{font-size:13px;color:var(--red);margin-top:10px;display:none}
+.le.on{display:block}
+.lhint{font-size:12px;color:var(--dim);margin-top:16px;cursor:pointer;text-decoration:underline}
+.app{display:none}
+.app.on{display:block}
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.nvl{display:flex;align-items:center;gap:10px}
+.nt{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--text)}
+.nb2{font-size:11px;background:var(--glow);color:var(--gold);border:1px solid rgba(212,168,67,.22);border-radius:3px;padding:2px 8px;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+.nvr{display:flex;gap:8px;align-items:center}
+.btn{padding:7px 14px;font-size:13px;border:1px solid var(--border2);border-radius:6px;background:transparent;cursor:pointer;color:var(--text);transition:all .15s;font-family:'DM Sans',sans-serif}
+.btn:hover{background:var(--bg3)}
+.btn.gold{background:var(--gold);color:#0d1018;border-color:var(--gold);font-weight:500}
+.btn.gold:hover{background:#e0b84d}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn.danger{color:var(--red);border-color:rgba(217,80,80,.25)}
+.btn.danger:hover{background:var(--red-bg)}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:2px}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;border:none;background:none;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;font-family:'DM Sans',sans-serif}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.tab:hover:not(.on){color:var(--text)}
+.main{padding:24px;max-width:1100px;margin:0 auto}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.metric{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.metric.acc{border-top:2px solid var(--gold)}
+.mlbl{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.mval{font-size:26px;font-weight:500;color:var(--text)}
+.msub{font-size:12px;color:var(--muted);margin-top:4px}
+.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.scol{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;min-height:180px}
+.sch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.scn{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.scc{font-size:11px;background:var(--bg3);border:1px solid var(--border);border-radius:99px;padding:2px 8px;color:var(--dim)}
+.dc{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
+.dc:hover{border-color:#c49535}
+.dca{font-size:12px;font-weight:500;color:var(--text);line-height:1.4;margin-bottom:4px}
+.dcp{font-size:13px;color:var(--gold);font-weight:500}
+.dcm{font-size:11px;color:var(--dim);margin-top:5px;display:flex;flex-direction:column;gap:2px}
+.ud{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+.uh{background:var(--red)}.uw{background:var(--amber)}.uc{background:var(--green)}
+.frow{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.fi{background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 12px}
+.fi:focus{outline:none;border-color:var(--gold)}
+.fi::placeholder{color:var(--dim)}
+.fs{background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;appearance:none;cursor:pointer}
+.fs option{background:#1b2030}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;color:var(--dim);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:hover td{background:var(--bg2);cursor:pointer}
+.ac strong{display:block;font-weight:500;color:var(--text)}
+.ac span{font-size:12px;color:var(--muted)}
+.bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:500}
+.bn{background:var(--blue-bg);color:var(--blue)}.br{background:var(--amber-bg);color:var(--amber)}.bd{background:var(--purple-bg);color:var(--purple)}.bo{background:var(--glow);color:var(--gold)}.bc{background:var(--green-bg);color:var(--green)}.bx{background:rgba(61,66,89,.3);color:var(--dim)}
+.tp{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:2px 8px;border-radius:4px;font-size:11px}
+.rc{display:flex;align-items:center;gap:6px}
+.av{width:26px;height:26px;border-radius:50%;background:var(--purple-bg);color:var(--purple);font-size:10px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;justify-content:flex-end;backdrop-filter:blur(2px)}
+.ov.gone{display:none}
+.panel{width:100%;max-width:580px;background:var(--bg2);height:100%;overflow-y:auto;border-left:1px solid var(--border2)}
+.ph{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:10}
+.pht{font-size:16px;font-weight:500;color:var(--text);line-height:1.3}
+.pha{font-size:12px;color:var(--muted);margin-top:3px}
+.phc{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.phc:hover{color:var(--text)}
+.pb{padding:20px 24px 40px}
+.ps{margin-bottom:20px}
+.pst{font-size:11px;font-weight:500;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dgf{grid-column:1/-1}
+.di label{font-size:11px;color:var(--dim);display:block;margin-bottom:3px}
+.di span{font-size:13px;color:var(--text)}
+.nb{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:12px;font-size:13px;color:var(--muted);line-height:1.6}
+.tgl{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+.tgl span{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 9px;font-size:11px;color:var(--muted)}
+.dr{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--muted);margin-bottom:5px}
+.ss{background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:7px 10px;appearance:none;cursor:pointer}
+.ss:focus{outline:none;border-color:var(--gold)}
+.ss option{background:#1b2030}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.mo.gone{display:none}
+.mc{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:28px;width:100%;max-width:500px}
+.mc h3{font-size:16px;font-weight:500;margin-bottom:6px;color:var(--text)}
+.mc p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.mf{margin-bottom:14px}
+.mf label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.mf input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 12px}
+.mf input:focus{outline:none;border-color:var(--gold)}
+.hint{font-size:11px;color:var(--dim);margin-top:5px;line-height:1.5}
+.hint a{color:var(--gold)}
+.ma{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--green);border-radius:8px;padding:13px 17px;font-size:14px;color:var(--text);box-shadow:0 8px 28px rgba(0,0,0,.45);transform:translateY(72px);opacity:0;transition:all .3s ease;z-index:999;min-width:240px}
+.toast.on{transform:translateY(0);opacity:1}
+.toast.err{border-left-color:var(--red)}
+.tt{font-weight:500;margin-bottom:2px}
+.tm{font-size:12px;color:var(--muted)}
+.empty{text-align:center;padding:40px;color:var(--dim);font-size:13px}
+@media(max-width:768px){.metrics{grid-template-columns:1fr 1fr}.board{grid-template-columns:1fr}.panel{max-width:100%}}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div class="lock" id="lockScreen">
+  <div class="lc">
+    <div class="lico">🔐</div>
+    <div class="lt">Pipeline Access</div>
+    <div class="ls">Private deal dashboard · authorized access only</div>
+    <input class="li" type="password" id="pwIn" placeholder="Enter password" onkeydown="if(event.key==='Enter')unlock()">
+    <button class="lb" onclick="unlock()">UNLOCK</button>
+    <div class="le" id="lockErr">Incorrect password — try again.</div>
+    <div class="lhint" onclick="openModal()">First time? Set your password →</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <nav class="nav">
+    <div class="nvl"><div class="nt">Deal Pipeline</div><div class="nb2">Private</div></div>
+    <div class="nvr">
+      <button class="btn sm" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn sm gold" onclick="syncSheets()">📊 Sync Sheets</button>
+      <button class="btn sm" onclick="openModal()">⚙ Settings</button>
+      <button class="btn sm danger" onclick="lock()">Lock</button>
+    </div>
+  </nav>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('pipeline',this)">Pipeline Board</button>
+    <button class="tab" onclick="switchTab('list',this)">All Leads</button>
+    <button class="tab" onclick="switchTab('add',this)">+ Add Lead</button>
+  </div>
+  <div class="main">
+    <div class="metrics" id="metricsBar"></div>
+    <div id="tab-pipeline"><div class="board" id="board"></div></div>
+    <div id="tab-list" style="display:none">
+      <div class="frow">
+        <input class="fi" type="text" placeholder="Search…" id="si" oninput="renderList()" style="flex:1;min-width:160px">
+        <select class="fs" id="fstage" onchange="renderList()"><option value="">All Stages</option><option>New</option><option>Review</option><option>Due Diligence</option><option>Offer</option><option>Closed</option><option>Dead</option></select>
+        <select class="fs" id="ftype" onchange="renderList()"><option value="">All Types</option><option>Multifamily</option><option>RV Park</option><option>Self Storage</option><option>Mobile Home Park</option><option>Mixed Use</option><option>Single Tenant NNN</option><option>Land</option><option>Other</option></select>
+      </div>
+      <div class="tw"><table><thead><tr><th>Address</th><th>Type</th><th>Seller</th><th>Price</th><th>Stage</th><th>Urgency</th><th>Rep</th><th>Date</th></tr></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+    <div id="tab-add" style="display:none">
+      <div style="max-width:640px">
+        <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Manually add a lead. For birddog submissions share <strong style="color:var(--text)">submit-lead.html</strong>.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="addForm"></div>
+        <div style="margin-top:20px;display:flex;gap:10px"><button class="btn gold" onclick="addLead()">Add to Pipeline</button><button class="btn" onclick="buildAddForm()">Clear</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="ov gone" id="ov" onclick="if(event.target===this)closePanel()">
+  <div class="panel">
+    <div class="ph"><div><div class="pht" id="pt">—</div><div class="pha" id="pa">—</div></div><button class="phc" onclick="closePanel()">✕</button></div>
+    <div class="pb" id="pb"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="mo gone" id="modal">
+  <div class="mc">
+    <h3>Settings</h3>
+    <p>Set your password, configure email alerts, and connect Google Sheets.</p>
+    <div class="mf">
+      <label>Pipeline password</label>
+      <input type="password" id="cfg-pw" placeholder="New password (leave blank to keep current)">
+    </div>
+    <div class="mf">
+      <label>Notification email</label>
+      <input type="email" id="cfg-email" value="forwillenterprises@gmail.com">
+      <div class="hint">Email alerts are sent here when a birddog submits a lead.</div>
+    </div>
+    <div class="mf">
+      <label>Google Apps Script webhook URL</label>
+      <input type="url" id="cfg-webhook" placeholder="https://script.google.com/macros/s/…/exec">
+      <div class="hint">Deploy <strong>pipeline-webhook.gs</strong> at <a href="https://script.google.com" target="_blank">script.google.com</a> → New Project → paste the code → Deploy as Web App → copy URL here. This auto-creates your Sheet and sends Gmail alerts.</div>
+    </div>
+    <div class="ma">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn gold" onclick="saveSettings()">Save settings</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="tt" id="tt2"></div><div class="tm" id="tm2"></div></div>
+
+<script>
+const DEFAULT_PW="deals2024";
+let leads=JSON.parse(localStorage.getItem('pipelineLeads')||'null')||[
+  {id:1,address:'4200 Desert Wind Blvd, Tucson, AZ 85701',type:'RV Park',seller:'Jim Kowalski',phone:'(520) 555-0182',email:'jk@email.com',price:'$1,850,000',units:'62 pads',year:'1994',size:'8.2 acres',reason:'Retirement',timeline:'60-90 days',stage:'Due Diligence',rep:'Marcus T.',date:'2025-01-08',urgency:'🟡 Warm — motivated, not desperate',motivation:'Seller is 72, wants to retire. Has owned 18 years.',terms:['Seller Financing','All Cash'],down:'25%',rate:'6.5%',amort:'25yr am, 5yr balloon',cap:'8.1% cap',income:'$210,000',expenses:'$88,000',occ:'91%',avgrent:'$285/mo',condition:'Bath house roofs need work ~$40k.',valueadd:'10 pull-throughs can add hookups.',liens:'Small vendor lien $8k.',docs:['T12','Rent Roll','Photos'],links:'',notes:'Strong market. Campgrounds within 5mi are 95%+ occupied.',source:'Cold call',broker:'No — off market',termsNotes:''},
+  {id:2,address:'811 Riverside Commons, Columbus, OH 43204',type:'Multifamily',seller:'Linda Holt (Holt Properties LLC)',phone:'(614) 555-0341',email:'lholt@holtprop.com',price:'$3,200,000',units:'28 units',year:'1978',size:'24,800 sqft',reason:'Estate / probate',timeline:'30-60 days',stage:'Review',rep:'Sara K.',date:'2025-01-14',urgency:'🟡 Warm — motivated, not desperate',motivation:'Inherited property. Attorney motivated.',terms:['All Cash','Assumable Loan'],down:'',rate:'',amort:'',cap:'6.8% cap',income:'$312,000',expenses:'$162,000',occ:'85%',avgrent:'$930/mo',condition:'Mechanicals updated 2019.',valueadd:'Below market rents $120/unit.',liens:'CMBS loan $1.4M assumable.',docs:['Offering Memorandum','Rent Roll','Tax Returns'],links:'https://loopnet.com/listing/811-riverside',notes:'Price may have room.',source:'Broker relationship',broker:'Yes — listed',termsNotes:''},
+  {id:3,address:'920 N Palo Verde Dr, Blythe, CA 92225',type:'Mobile Home Park',seller:'Terry & Donna Vasquez',phone:'(760) 555-0290',email:'',price:'$780,000',units:'34 spaces',year:'1971',size:'5.5 acres',reason:'Financial distress',timeline:'Immediate — under 30 days',stage:'New',rep:'Dan R.',date:'2025-01-17',urgency:'🔴 Hot — seller needs to move NOW',motivation:'Behind on taxes. Need quick sale.',terms:['All Cash','Subject To','Seller Financing'],down:'30%',rate:'7%',amort:'20yr am',cap:'9.4% cap',income:'$96,000',expenses:'$42,000',occ:'79%',avgrent:'$235/mo',condition:'Water main issue. 4 vacant pads.',valueadd:'Raise rents +$50/space.',liens:'Back taxes ~$22k.',docs:['Rent Roll'],links:'',notes:'Would consider $680k. URGENT.',source:'Driving for dollars',broker:'No — off market',termsNotes:'Seller carry 3yr if $200k down.'},
+  {id:4,address:'3318 Lakeview Ln, Branson, MO 65616',type:'RV Park',seller:'Harold Simms',phone:'(417) 555-0178',email:'harold@lakeviewrv.net',price:'$4,400,000',units:'98 sites',year:'1989',size:'22 acres',reason:'Retirement',timeline:'Flexible / no rush',stage:'Offer',rep:'Marcus T.',date:'2024-12-20',urgency:'🟢 Cool — good deal, no rush',motivation:'Harold is 68. Would seller-finance right buyer.',terms:['Seller Financing','All Cash','Owner Carry'],down:'20%',rate:'5.75%',amort:'30yr am, 10yr balloon',cap:'8.8% cap',income:'$520,000',expenses:'$218,000',occ:'94%',avgrent:'$445/night seasonal',condition:'Well maintained. Bath houses updated 2021.',valueadd:'Add 12 premium sites on south parcel.',liens:'Free and clear.',docs:['T12','Rent Roll','Offering Memorandum','Tax Returns','Photos','Survey'],links:'',notes:'Verbal offer $4.1M submitted.',source:'Cold call',broker:'No — off market',termsNotes:'80/20 seller finance 5.75%, 10yr balloon.'},
+];
+let nextId=leads.length?Math.max(...leads.map(l=>l.id))+1:1;
+function save(){localStorage.setItem('pipelineLeads',JSON.stringify(leads))}
+function getPW(){return localStorage.getItem('pipelinePW')||DEFAULT_PW}
+function unlock(){
+  const v=document.getElementById('pwIn').value;
+  if(v===getPW()){document.getElementById('lockScreen').classList.add('gone');document.getElementById('app').classList.add('on');renderAll()}
+  else{document.getElementById('lockErr').classList.add('on');document.getElementById('pwIn').value='';setTimeout(()=>document.getElementById('lockErr').classList.remove('on'),3000)}
+}
+function lock(){document.getElementById('app').classList.remove('on');document.getElementById('lockScreen').classList.remove('gone');document.getElementById('pwIn').value=''}
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!document.getElementById('lockScreen').classList.contains('gone'))unlock()});
+function switchTab(n,el){['pipeline','list','add'].forEach(t=>document.getElementById('tab-'+t).style.display=t===n?'block':'none');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');if(n==='list')renderList();if(n==='add')buildAddForm()}
+const STS=['New','Review','Due Diligence','Offer','Closed'];
+const BM={New:'bn',Review:'br','Due Diligence':'bd',Offer:'bo',Closed:'bc',Dead:'bx'};
+function renderMetrics(){
+  const active=leads.filter(l=>!['Dead','Closed'].includes(l.stage)).length;
+  const tv=leads.map(l=>parseFloat((l.price||'').replace(/[^0-9.]/g,''))||0).reduce((a,b)=>a+b,0);
+  const hot=leads.filter(l=>(l.urgency||'').includes('Hot')).length;
+  document.getElementById('metricsBar').innerHTML=[['Total Leads',leads.length,'all time',''],['Active Pipeline',active,'not closed or dead',' acc'],['Pipeline Value','$'+(tv/1e6).toFixed(1)+'M','combined ask prices',''],['Hot Leads',hot,'immediate timeline','']].map(([l,v,s,c])=>`<div class="metric${c}"><div class="mlbl">${l}</div><div class="mval">${v}</div><div class="msub">${s}</div></div>`).join('');
+}
+function udot(u){return`<span class="ud ${(u||'').includes('Hot')?'uh':(u||'').includes('Warm')?'uw':'uc'}"></span>`}
+function renderBoard(){
+  document.getElementById('board').innerHTML=STS.map(stage=>{
+    const items=leads.filter(l=>l.stage===stage);
+    return`<div class="scol"><div class="sch"><div class="scn">${stage}</div><div class="scc">${items.length}</div></div>${items.length?items.map(l=>`<div class="dc" onclick="openDetail(${l.id})"><div class="dca">${l.address.split(',').slice(0,2).join(',')}</div><div class="dcp">${l.price||'TBD'}</div><div class="dcm"><span>${l.type}</span><span>${udot(l.urgency)}${(l.urgency||'').replace(/[🔴🟡🟢]\s*/,'')||'—'}</span><span>📋 ${l.rep}</span></div></div>`).join(''):'<div style="font-size:12px;color:var(--dim);text-align:center;padding:16px 0">Empty</div>'}</div>`;
+  }).join('');
+}
+function fd(d){try{return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}catch(e){return d||'—'}}
+function renderList(){
+  const q=(document.getElementById('si').value||'').toLowerCase();
+  const st=document.getElementById('fstage').value;
+  const ty=document.getElementById('ftype').value;
+  const f=leads.filter(l=>{const m=!q||(l.address+l.seller+l.rep+l.type).toLowerCase().includes(q);return m&&(!st||l.stage===st)&&(!ty||l.type===ty)});
+  const tb=document.getElementById('tbody');
+  if(!f.length){tb.innerHTML=`<tr><td colspan="8"><div class="empty">No leads match your filters.</div></td></tr>`;return}
+  tb.innerHTML=f.map(l=>{const p=l.address.split(',');return`<tr onclick="openDetail(${l.id})"><td class="ac"><strong>${p[0]}</strong><span>${p.slice(1).join(',').trim()}</span></td><td><span class="tp">${l.type}</span></td><td>${(l.seller||'').split('(')[0].trim()}</td><td style="color:var(--gold);font-weight:500">${l.price||'TBD'}</td><td><span class="bdg ${BM[l.stage]||'bn'}">${l.stage}</span></td><td>${udot(l.urgency)} ${(l.urgency||'').replace(/[🔴🟡🟢]\s*/,'')}</td><td><div class="rc"><div class="av">${(l.rep||'?').split(' ').map(x=>x[0]).join('').slice(0,2)}</div>${l.rep}</div></td><td style="color:var(--muted)">${fd(l.date)}</td></tr>`}).join('');
+}
+function openDetail(id){
+  const l=leads.find(x=>x.id===id);if(!l)return;
+  document.getElementById('pt').textContent=l.address.split(',').slice(0,2).join(',');
+  document.getElementById('pa').textContent=l.address;
+  const opts=[...STS,'Dead'].map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('');
+  const tgs=(l.terms||[]).map(t=>`<span>${t}</span>`).join('');
+  const docs=(l.docs||[]).length?(l.docs||[]).map(d=>`<div class="dr">📄 ${d}</div>`).join(''):'<div style="font-size:13px;color:var(--dim)">None attached</div>';
+  document.getElementById('pb').innerHTML=`
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:20px;flex-wrap:wrap"><span class="bdg ${BM[l.stage]||'bn'}">${l.stage}</span><span class="tp">${l.type}</span><span style="font-size:12px;color:var(--dim)">${fd(l.date)}</span></div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:20px;flex-wrap:wrap"><label style="font-size:12px;color:var(--muted)">Move to:</label><select class="ss" onchange="chStage(${l.id},this.value)">${opts}</select><button class="btn sm danger" onclick="markDead(${l.id})">Mark dead</button></div>
+    <div class="ps"><div class="pst">Property</div><div class="dg">
+      <div class="di"><label>Asking price</label><span style="font-size:16px;font-weight:500;color:var(--gold)">${l.price||'TBD'}</span></div>
+      <div class="di"><label>Cap rate / GRM</label><span>${l.cap||'—'}</span></div>
+      <div class="di"><label>Units / spaces</label><span>${l.units||'—'}</span></div>
+      <div class="di"><label>Year built</label><span>${l.year||'—'}</span></div>
+      <div class="di"><label>Gross income</label><span>${l.income||'—'}</span></div>
+      <div class="di"><label>Expenses</label><span>${l.expenses||'—'}</span></div>
+      <div class="di"><label>Occupancy</label><span>${l.occ||'—'}</span></div>
+      <div class="di"><label>Avg rent / space</label><span>${l.avgrent||'—'}</span></div>
+      ${l.condition?`<div class="di dgf"><label>Condition</label><div class="nb">${l.condition}</div></div>`:''}
+      ${l.valueadd?`<div class="di dgf"><label>Value-add</label><div class="nb">${l.valueadd}</div></div>`:''}
+    </div></div>
+    <div class="ps"><div class="pst">Seller</div><div class="dg">
+      <div class="di"><label>Name</label><span>${l.seller||'—'}</span></div>
+      <div class="di"><label>Phone</label><span>${l.phone||'—'}</span></div>
+      <div class="di"><label>Email</label><span>${l.email||'—'}</span></div>
+      <div class="di"><label>Broker?</label><span>${l.broker||'—'}</span></div>
+      <div class="di"><label>Reason</label><span>${l.reason||'—'}</span></div>
+      <div class="di"><label>Timeline</label><span>${l.timeline||'—'}</span></div>
+      ${l.motivation?`<div class="di dgf"><label>Motivation</label><div class="nb">${l.motivation}</div></div>`:''}
+      ${l.liens?`<div class="di dgf"><label>Liens / title</label><div class="nb">${l.liens}</div></div>`:''}
+    </div></div>
+    <div class="ps"><div class="pst">Terms</div>
+      <div class="tgl" style="margin-bottom:10px">${tgs||'<span style="color:var(--dim);font-size:13px">None specified</span>'}</div>
+      <div class="dg">
+        <div class="di"><label>Down payment</label><span>${l.down||'—'}</span></div>
+        <div class="di"><label>Rate</label><span>${l.rate||'—'}</span></div>
+        <div class="di dgf"><label>Amortization</label><span>${l.amort||'—'}</span></div>
+        ${l.termsNotes?`<div class="di dgf"><label>Terms notes</label><div class="nb">${l.termsNotes}</div></div>`:''}
+      </div>
+    </div>
+    <div class="ps"><div class="pst">Documents</div>${docs}${l.links?`<div style="margin-top:8px;font-size:13px">🔗 <a href="${l.links}" style="color:var(--blue)" target="_blank">${l.links}</a></div>`:''}</div>
+    ${l.notes?`<div class="ps"><div class="pst">Notes</div><div class="nb">${l.notes}</div></div>`:''}
+    <div class="ps"><div class="pst">Submission</div><div class="dg">
+      <div class="di"><label>Submitted by</label><span>${l.rep}</span></div>
+      <div class="di"><label>Date</label><span>${fd(l.date)}</span></div>
+      <div class="di"><label>Source</label><span>${l.source||'—'}</span></div>
+      <div class="di"><label>Urgency</label><span>${l.urgency||'—'}</span></div>
+    </div></div>
+    <div style="margin-top:8px"><button class="btn sm danger" onclick="delLead(${l.id})">Delete lead</button></div>`;
+  document.getElementById('ov').classList.remove('gone');
+}
+function closePanel(){document.getElementById('ov').classList.add('gone')}
+function chStage(id,stage){const l=leads.find(x=>x.id===id);if(l){l.stage=stage;save();renderAll();showToast('Stage updated','Moved to '+stage)}}
+function markDead(id){chStage(id,'Dead');closePanel()}
+function delLead(id){if(!confirm('Delete this lead permanently?'))return;leads=leads.filter(x=>x.id!==id);save();renderAll();closePanel();showToast('Lead deleted','Removed from pipeline.')}
+function si2(id,label,type,ph,full,opts){
+  const w=full?'grid-column:1/-1':'';
+  const inp=type==='select'?`<select id="${id}" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;width:100%;appearance:none">${opts.map(o=>`<option>${o}</option>`).join('')}</select>`:type==='textarea'?`<textarea id="${id}" placeholder="${ph}" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;width:100%;min-height:80px;resize:vertical"></textarea>`:`<input type="${type}" id="${id}" placeholder="${ph}" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:9px 12px;width:100%">`;
+  return`<div style="${w}"><div style="display:flex;flex-direction:column;gap:6px"><label style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">${label}</label>${inp}</div></div>`;
+}
+function buildAddForm(){
+  document.getElementById('addForm').innerHTML=[si2('a-addr','Address *','text','123 Main St, City, State',true),si2('a-type','Property type *','select','',false,[' ','Multifamily','RV Park','Self Storage','Mobile Home Park','Mixed Use','Single Tenant NNN','Land','Other']),si2('a-price','Asking price','text','$0,000,000',false),si2('a-units','Units / spaces','text','e.g. 48 units',false),si2('a-seller','Seller name *','text','Full name',false),si2('a-phone','Seller phone','tel','(555) 000-0000',false),si2('a-reason','Reason','select','',false,[' ','Retirement','Estate / probate','Financial distress','Divorce','Relocating','1031 exchange','Partnership split','Health reasons','Other']),si2('a-timeline','Timeline','select','',false,[' ','Immediate — under 30 days','30–60 days','60–90 days','90–180 days','Flexible / no rush']),si2('a-stage','Stage','select','',false,STS),si2('a-urgency','Urgency','select','',false,[' ','🔴 Hot — seller needs to move NOW','🟡 Warm — motivated, not desperate','🟢 Cool — good deal, no rush']),si2('a-rep','Your name *','text','First Last',false),si2('a-notes','Notes','textarea','Anything relevant…',true)].join('');
+}
+function gv2(id){return(document.getElementById(id)||{}).value||''}
+function addLead(){
+  const address=gv2('a-addr').trim(),seller=gv2('a-seller').trim(),rep=gv2('a-rep').trim(),type=gv2('a-type');
+  if(!address||!seller||!rep||!type){showToast('Missing fields','Address, type, seller, and your name required.',true);return}
+  const lead={id:nextId++,address,type,seller,phone:gv2('a-phone'),email:'',price:gv2('a-price'),units:gv2('a-units'),year:'',size:'',reason:gv2('a-reason'),timeline:gv2('a-timeline'),stage:gv2('a-stage')||'New',rep,date:new Date().toISOString().split('T')[0],urgency:gv2('a-urgency'),motivation:'',terms:[],down:'',rate:'',amort:'',cap:'',income:'',expenses:'',occ:'',avgrent:'',condition:'',valueadd:'',liens:'',docs:[],links:'',notes:gv2('a-notes'),source:'Manual entry',broker:'',termsNotes:''};
+  leads.unshift(lead);save();renderAll();
+  pingWebhook({action:'new_lead',lead});
+  showToast('Lead added',address.split(',')[0]+' added.');
+  switchTab('pipeline',document.querySelectorAll('.tab')[0]);
+}
+function exportCSV(){
+  const H=['ID','Address','Type','Seller','Phone','Email','Price','Units','Year','Cap','Occupancy','Avg Rent','Income','Expenses','Reason','Timeline','Terms','Down','Rate','Amort','Condition','Value-Add','Liens','Docs','Links','Rep','Stage','Urgency','Date','Notes'];
+  const rows=leads.map(l=>[l.id,`"${l.address}"`,l.type,`"${l.seller}"`,l.phone,l.email,l.price,l.units,l.year,l.cap,l.occ,l.avgrent,l.income,l.expenses,l.reason,l.timeline,`"${(l.terms||[]).join(', ')}"`,l.down,l.rate,l.amort,`"${l.condition||''}"`,`"${l.valueadd||''}"`,`"${l.liens||''}"`,`"${(l.docs||[]).join(', ')}"`,l.links,l.rep,l.stage,l.urgency,l.date,`"${l.notes||''}"`].join(','));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[H.join(','),...rows].join('\n')],{type:'text/csv'}));a.download=`pipeline-${new Date().toISOString().split('T')[0]}.csv`;a.click();
+  showToast('CSV exported',leads.length+' leads downloaded.');
+}
+async function pingWebhook(payload){
+  const wh=localStorage.getItem('cfg-webhook')||'';
+  if(!wh)return;
+  try{await fetch(wh,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})}catch(e){console.warn('Webhook',e)}
+}
+async function syncSheets(){
+  const wh=localStorage.getItem('cfg-webhook')||'';
+  if(!wh){showToast('Webhook not set','Go to ⚙ Settings and paste your Apps Script URL.',true);return}
+  showToast('Syncing…','Pushing leads to Google Sheets.');
+  for(const lead of leads){await pingWebhook({action:'new_lead',lead});await new Promise(r=>setTimeout(r,150))}
+  showToast('Sync complete',leads.length+' leads sent to Google Sheets.');
+}
+function openModal(){document.getElementById('cfg-webhook').value=localStorage.getItem('cfg-webhook')||'';document.getElementById('cfg-email').value=localStorage.getItem('cfg-email')||'forwillenterprises@gmail.com';document.getElementById('modal').classList.remove('gone')}
+function closeModal(){document.getElementById('modal').classList.add('gone')}
+function saveSettings(){
+  const pw=document.getElementById('cfg-pw').value.trim();
+  const email=document.getElementById('cfg-email').value.trim();
+  const wh=document.getElementById('cfg-webhook').value.trim();
+  if(pw)localStorage.setItem('pipelinePW',pw);
+  if(email)localStorage.setItem('cfg-email',email);
+  if(wh)localStorage.setItem('cfg-webhook',wh);
+  closeModal();showToast('Settings saved','Configuration updated.');
+  if(wh)pingWebhook({action:'setup_sheet'});
+}
+function showToast(title,msg,err){
+  const t=document.getElementById('toast');
+  document.getElementById('tt2').textContent=title;
+  document.getElementById('tm2').textContent=msg||'';
+  t.className='toast'+(err?' err':'')+' on';
+  setTimeout(()=>t.classList.remove('on'),4500);
+}
+function renderAll(){renderMetrics();renderBoard()}
+</script>
+</body>
+</html>
